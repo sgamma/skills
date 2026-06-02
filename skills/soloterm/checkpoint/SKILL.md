@@ -1,101 +1,101 @@
 ---
 name: checkpoint
-description: Salva lo stato della sessione corrente in uno scratchpad Solo dedicato, in modo che dopo /clear o a inizio di una nuova giornata `/resume` possa riproporre i next step. Use when user is about to /clear, end the workday, or pause work mid-session.
-argument-hint: "Optional: descrizione breve di cosa stiamo chiudendo (es. 'ADR-0009 pubblicata')"
+description: Saves the current session state into a dedicated Solo scratchpad, so that after /clear or at the start of a new day `/resume` can re-propose the next steps. Use when user is about to /clear, end the workday, or pause work mid-session.
+argument-hint: "Optional: short description of what we're wrapping up (e.g. 'ADR-0009 published')"
 ---
 
 <what-to-do>
 
-Cristallizza lo stato di lavoro corrente in uno scratchpad Solo dedicato, così che una nuova sessione (post-`/clear` o il giorno dopo) possa essere ripresa con `/resume` senza richiedere all'utente di ricordare cosa stava succedendo.
+Crystallize the current work state into a dedicated Solo scratchpad, so that a new session (post-`/clear` or the next day) can be resumed with `/resume` without asking the user to remember what was going on.
 
-## Step 1 — Identifica il proj Solo corrente
+## Step 1 — Identify the current Solo proj
 
-Chiama `mcp__solo__whoami` per ottenere `project_id` + `project_name`. Tutto il checkpoint vive scope al proj corrente.
+Call `mcp__solo__whoami` to get `project_id` + `project_name`. The whole checkpoint is scoped to the current proj.
 
-## Step 2 — Estrai automaticamente lo stato dalla conversazione
+## Step 2 — Automatically extract the state from the conversation
 
-Componi una bozza guardando la conversazione recente:
+Draft a summary by looking at the recent conversation:
 
-- **Cosa è stato chiuso in questa sessione**: 1-2 frasi su decisioni, artefatti, problem solved
-- **Decisioni cristallizzate**: bullet list compatto (es. ADR pubblicate, scelte di design, configurazioni decise)
-- **File modificati o creati**: path + descrizione di 1 riga (no diff)
-- **Next step priorizzati** (3-5 max, in ordine): azione esplicita + 1-line context. Includi cross-proj se rilevante ("proj/8: ...").
-- **Comando di partenza** (un prompt pronto-da-incollare): es. "leggi checkpoint e proseguiamo con [step 1]"
+- **What was wrapped up in this session**: 1-2 sentences on decisions, artifacts, problems solved
+- **Crystallized decisions**: compact bullet list (e.g. published ADRs, design choices, settled configurations)
+- **Files changed or created**: path + 1-line description (no diff)
+- **Prioritized next steps** (3-5 max, in order): explicit action + 1-line context. Include cross-proj ones if relevant ("proj/8: ...").
+- **Starting command** (a ready-to-paste prompt): e.g. "read the checkpoint and let's continue with [step 1]"
 
-L'argomento opzionale della skill, se passato, è il tema della chiusura (es. "ADR-0009 pubblicata") — usalo per orientare l'estrazione.
+The skill's optional argument, if passed, is the theme of the wrap-up (e.g. "ADR-0009 published") — use it to orient the extraction.
 
-## Step 3 — Conferma con AskUserQuestion (hybrid mode)
+## Step 3 — Confirm with AskUserQuestion (hybrid mode)
 
-Mostra la bozza compatta in chat (non un giga-dump — sintetica). Poi `AskUserQuestion` con opzioni:
-- "Salva così" (procedi a step 4)
-- "Modifico io" (apri editor mentale: chiedi all'utente di scrivere correzioni libere e ricomponi)
-- "Annulla" (esci senza scrivere)
+Show the compact draft in chat (not a giant dump — keep it concise). Then `AskUserQuestion` with options:
+- "Save as is" (proceed to step 4)
+- "I'll edit it" (open mental editor: ask the user to write free-form corrections and recompose)
+- "Cancel" (exit without writing)
 
-## Step 4 — Scrivi nello scratchpad Solo dedicato
+## Step 4 — Write to the dedicated Solo scratchpad
 
-Nome scratchpad: **`checkpoint`** (scope implicito dal proj corrente). Tag: `["checkpoint", "next-step"]`.
+Scratchpad name: **`checkpoint`** (scope implicit from the current proj). Tags: `["checkpoint", "next-step"]`.
 
-Usa `mcp__solo__scratchpad_write` (overwrite intenzionale — il checkpoint è SEMPRE l'ultimo stato, non un cumulativo). Format esatto del body:
+Use `mcp__solo__scratchpad_write` (intentional overwrite — the checkpoint is ALWAYS the latest state, not a cumulative log). Exact body format:
 
 ```markdown
 # Checkpoint — {project_name} — {YYYY-MM-DD HH:MM}
 
 ## Status
-{1-2 sentence summary di cosa è stato chiuso}
+{1-2 sentence summary of what was wrapped up}
 
-## Decisioni cristallizzate
+## Crystallized decisions
 - {bullet 1}
 - {bullet 2}
 - ...
 
-## File modificati o creati
+## Files changed or created
 - `{path}` — {1-line description}
 - ...
 
-## Next step (in ordine)
-1. **{azione concisa}** — {context}
-2. **{azione concisa}** — {context}
+## Next steps (in order)
+1. **{concise action}** — {context}
+2. **{concise action}** — {context}
 3. ...
 
-## Comando di partenza dopo /clear
+## Starting command after /clear
 
 \`\`\`
-{prompt pronto-da-incollare}
+{ready-to-paste prompt}
 \`\`\`
 
-## Cross-proj note (opzionale)
-- proj/{N} {nome}: {nota breve}
+## Cross-proj notes (optional)
+- proj/{N} {name}: {short note}
 - ...
 ```
 
-Se la skill `mcp__solo__scratchpad_write` non è disponibile, fai `ToolSearch` per caricarla. Pratica equivalente per `scratchpad_find` (verifica se esiste già un scratchpad `checkpoint`; se sì, overwrite via il suo id; se no, crea nuovo).
+If the `mcp__solo__scratchpad_write` tool isn't available, run `ToolSearch` to load it. Same goes for `scratchpad_find` (check whether a `checkpoint` scratchpad already exists; if so, overwrite via its id; if not, create a new one).
 
-## Step 5 — Conferma all'utente
+## Step 5 — Confirm to the user
 
-Una riga: "Salvato. Quando riapri sessione, invoca `/resume` (o pasta direttamente il comando di partenza)."
+One line: "Saved. When you reopen the session, invoke `/resume` (or paste the starting command directly)."
 
 </what-to-do>
 
 <supporting-info>
 
-## Convenzione importante
+## Important convention
 
-- **Overwrite, non append**: il scratchpad `checkpoint` rappresenta SEMPRE l'ultimo stato. Non si accumula. Il narrative storico vive in `*progresso-sessione*`, qui solo lo snapshot corrente.
-- **Conciso**: max 30-40 righe totali. Lo scratchpad è uno spillover di context per `/resume`, non un altro doc da maintainere.
-- **No PII / secrets**: redact API key, password, plaintext credentials. Se trovi qualcosa di sospetto nella conversazione, sostituisci con `<redacted>`.
+- **Overwrite, not append**: the `checkpoint` scratchpad ALWAYS represents the latest state. It doesn't accumulate. The historical narrative lives in `*session-progress*`, here only the current snapshot.
+- **Concise**: 30-40 lines total max. The scratchpad is a context spillover for `/resume`, not yet another doc to maintain.
+- **No PII / secrets**: redact API keys, passwords, plaintext credentials. If you find anything suspicious in the conversation, replace it with `<redacted>`.
 
-## Quando NON usare checkpoint
+## When NOT to use checkpoint
 
-- Sessioni in cui non c'è stato nessun lavoro sostanziale (5 messaggi, nessuna decisione)
-- Sessioni in cui hai appena committato e pushato (commit message + scratchpad progresso-sessione sono già lo stato)
-- Sessioni puramente esplorative (lettura codice senza decisioni)
+- Sessions where no substantial work happened (5 messages, no decisions)
+- Sessions where you just committed and pushed (the commit message + session-progress scratchpad are already the state)
+- Purely exploratory sessions (reading code without decisions)
 
-In questi casi, segnala all'utente che non c'è bisogno di checkpoint e suggerisci eventuale alternativa (es. "il commit appena fatto + lo scratchpad progresso-sessione bastano come stato").
+In these cases, tell the user there's no need for a checkpoint and suggest a possible alternative (e.g. "the commit you just made + the session-progress scratchpad are enough as state").
 
-## Differenza vs /handoff (skill built-in)
+## Difference vs /handoff (built-in skill)
 
-`/handoff` produce un doc generico per "another agent". `/checkpoint` è specifico per il workflow Stefano + Solo MCP: lo stato vive in un scratchpad Solo accessibile cross-machine, è single-state (overwrite), ed è progettato per il pair `/checkpoint` → `/clear` → `/resume`.
+`/handoff` produces a generic doc for "another agent". `/checkpoint` is specific to the Stefano + Solo MCP workflow: the state lives in a Solo scratchpad accessible cross-machine, is single-state (overwrite), and is designed for the `/checkpoint` → `/clear` → `/resume` pair.
 
-Se l'utente vuole passare il lavoro a un'altra persona/agente, suggerisci `/handoff`. Se vuole sospendere il proprio lavoro per riprenderlo dopo, `/checkpoint` è la scelta giusta.
+If the user wants to hand the work off to another person/agent, suggest `/handoff`. If they want to suspend their own work to resume it later, `/checkpoint` is the right choice.
 
 </supporting-info>
