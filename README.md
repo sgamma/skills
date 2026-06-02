@@ -19,8 +19,8 @@ The repo doubles as a **Claude Code plugin** (`.claude-plugin/plugin.json`), so 
 ### Option A — link a local clone (simplest)
 
 ```bash
-git clone https://github.com/sgamma/claude-skills.git
-cd claude-skills
+git clone https://github.com/sgamma/skills.git
+cd skills
 ./scripts/link-skills.sh    # symlinks every skill into ~/.claude/skills
 ```
 
