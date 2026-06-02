@@ -9,10 +9,10 @@ The repo doubles as a **Claude Code plugin** (`.claude-plugin/plugin.json`), so 
 | Skill | Category | What it does |
 |---|---|---|
 | [`optimize-claude-md`](skills/engineering/optimize-claude-md/SKILL.md) | engineering | Slims a bloated `CLAUDE.md` using **progressive disclosure**: groups instructions by topic, extracts each into its own guide file, and leaves behind a compact on-demand pointer table — so the agent loads detail only when a task needs it. Ships a measurement script for before/after token counts. |
-| [`checkpoint`](skills/personal/checkpoint/SKILL.md) | personal | Crystallizes the current session state into a dedicated [Solo](https://github.com/solo) scratchpad so a fresh session can resume cleanly after `/clear`. *(Requires the Solo MCP server.)* |
-| [`resume`](skills/personal/resume/SKILL.md) | personal | Reads the `checkpoint` scratchpad and proposes the next steps as a clickable menu. *(Requires the Solo MCP server.)* |
+| [`checkpoint`](skills/soloterm/checkpoint/SKILL.md) | soloterm | Crystallizes the current session state into a dedicated [Solo](https://github.com/solo) scratchpad so a fresh session can resume cleanly after `/clear`. *(Requires the Solo MCP server.)* |
+| [`resume`](skills/soloterm/resume/SKILL.md) | soloterm | Reads the `checkpoint` scratchpad and proposes the next steps as a clickable menu. *(Requires the Solo MCP server.)* |
 
-> **engineering** = generally useful, ready to adopt. **personal** = wired to my own setup (e.g. the Solo MCP); useful as a pattern, but adapt before relying on it.
+> **engineering** = generally useful, ready to adopt. **soloterm** = wired to my own setup (the Solo MCP); useful as a pattern, but adapt before relying on it.
 
 ## Install
 
@@ -39,7 +39,7 @@ Point a plugin marketplace at this repo and enable the `sgamma-skills` plugin; t
 ```
 skills/
   engineering/   # broadly useful, shareable
-  personal/      # tied to my own tooling/workflow
+  soloterm/      # Solo-MCP session workflow, tied to my own setup
 scripts/
   link-skills.sh # symlink skills into ~/.claude/skills
   list-skills.sh # list skills + descriptions

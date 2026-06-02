@@ -4,7 +4,7 @@ This repo is a collection of Claude Code skills, versioned so they improve over 
 
 ## Layout
 
-- `skills/<category>/<name>/SKILL.md` — one skill per folder. `category` is `engineering` (broadly useful) or `personal` (tied to my own setup). `name` is the folder name and becomes the symlink name in `~/.claude/skills/`.
+- `skills/<category>/<name>/SKILL.md` — one skill per folder. `category` is `engineering` (broadly useful) or `soloterm` (Solo-MCP session workflow, tied to my own setup). `name` is the folder name and becomes the symlink name in `~/.claude/skills/`.
 - `scripts/link-skills.sh` — symlinks every skill into `~/.claude/skills/`.
 - `scripts/list-skills.sh` — lists skills + descriptions.
 - `.claude-plugin/plugin.json` — plugin manifest; **keep its `skills` array in sync** when adding/removing/moving a skill.

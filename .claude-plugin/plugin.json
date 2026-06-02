@@ -3,7 +3,7 @@
   "description": "Stefano's personal Claude Code skills — context optimization and session workflow.",
   "skills": [
     "./skills/engineering/optimize-claude-md",
-    "./skills/personal/checkpoint",
-    "./skills/personal/resume"
+    "./skills/soloterm/checkpoint",
+    "./skills/soloterm/resume"
   ]
 }
