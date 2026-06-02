@@ -1,8 +1,10 @@
 # Claude Code Skills
 
-A small, growing collection of [Claude Code](https://claude.com/claude-code) skills I build and refine as I work. Each one is a focused capability the agent loads on demand — no framework, no lock-in. Clone it, link it, make it your own.
+[![skills.sh](https://skills.sh/b/sgamma/skills)](https://skills.sh/sgamma/skills)
 
-The repo doubles as a **Claude Code plugin** (`.claude-plugin/plugin.json`), so you can install the whole set at once or cherry-pick individual skills.
+A small, growing collection of [Claude Code](https://claude.com/claude-code) skills I build and refine as I work. Each one is a focused capability the agent loads on demand — no framework, no lock-in.
+
+Install any of them in **one command** with [`npx skills`](#install) (see below), clone and link them yourself, or use the repo as a **Claude Code plugin**.
 
 ## Skills
 
@@ -16,7 +18,27 @@ The repo doubles as a **Claude Code plugin** (`.claude-plugin/plugin.json`), so 
 
 ## Install
 
-### Option A — link a local clone (simplest)
+### Option A — one command with `npx skills` (easiest)
+
+[`skills`](https://github.com/vercel-labs/skills) is an open-source installer (by Vercel Labs) that works with any GitHub repo of skills — no manual clone needed. It needs [Node.js](https://nodejs.org) (which ships `npx`).
+
+```bash
+# pick skills + agent interactively
+npx skills add sgamma/skills
+
+# just list what's inside first, without installing
+npx skills add sgamma/skills --list
+
+# install one specific skill
+npx skills add sgamma/skills --skill optimize-claude-md
+
+# install everything for Claude Code, globally, no prompts
+npx skills add sgamma/skills -a claude-code -g -y
+```
+
+It symlinks (or copies) the skills into your agent's directory — `./.claude/skills/` for the current project, or `~/.claude/skills/` with `-g`. Works for Claude Code, Cursor, Codex, and ~50 other agents. Update later with `npx skills update`.
+
+### Option B — link a local clone (for hacking on them)
 
 ```bash
 git clone https://github.com/sgamma/skills.git
@@ -24,13 +46,9 @@ cd skills
 ./scripts/link-skills.sh    # symlinks every skill into ~/.claude/skills
 ```
 
-Re-run `link-skills.sh` whenever you add or rename a skill. To see what's installed:
+Re-run `link-skills.sh` whenever you add or rename a skill. `./scripts/list-skills.sh` lists what's here; `./scripts/check-sync.sh` verifies the manifest and symlinks still match the folders.
 
-```bash
-./scripts/list-skills.sh
-```
-
-### Option B — as a Claude Code plugin
+### Option C — as a Claude Code plugin
 
 Point a plugin marketplace at this repo and enable the `sgamma-skills` plugin; the skills listed in `.claude-plugin/plugin.json` become available. See the [Claude Code plugin docs](https://docs.claude.com/en/docs/claude-code/plugins).
 
