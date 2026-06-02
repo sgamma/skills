@@ -1,6 +1,7 @@
 # Claude Code Skills
 
-[![skills.sh](https://skills.sh/b/sgamma/skills)](https://skills.sh/sgamma/skills)
+[![install: npx skills add sgamma/skills](https://img.shields.io/badge/install-npx_skills_add_sgamma%2Fskills-CB3837?logo=npm&logoColor=white)](#install)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
 A small, growing collection of [Claude Code](https://claude.com/claude-code) skills I build and refine as I work. Each one is a focused capability the agent loads on demand — no framework, no lock-in.
 
