@@ -43,6 +43,7 @@ skills/
 scripts/
   link-skills.sh # symlink skills into ~/.claude/skills
   list-skills.sh # list skills + descriptions
+  check-sync.sh  # warn if plugin.json / symlinks drift from the real folders
 .claude-plugin/
   plugin.json    # plugin manifest (lists each skill path)
 ```
